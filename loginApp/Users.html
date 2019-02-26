@@ -1,0 +1,124 @@
+﻿
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>משתמשים</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h2 style="text-align:center">רשימת משתמשים</h2>
+        <!--  <ul id="users" />  -->
+
+        <table id="users">
+            <tr>
+                <th>מין</th>
+                <th>תאריך לידה</th>
+                <th>מייל</th>
+                <th>טלפון</th>
+                <th>שם</th>
+            </tr>
+        </table>
+
+    </div>
+    <br>
+
+    <div dir="rtl">
+        <input type="button" value="רישום משתמש חדש" onclick="registration();" />
+    </div>
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var uri = 'api/UserDetailes';
+
+        $(document).ready(function () {
+            // Send an AJAX request
+            $.getJSON(uri)
+                .done(function (data) {
+                    // On success, 'data' contains a list of users.
+                    var count = 1;
+                    var html_code;
+                    $.each(data, function (key, item) {
+                        var html_code = "<tr id='row" + count + "'>";
+                        html_code += "<td contenteditable='true' class='_gender'>" + item._gender + "</td>";
+                        html_code += "<td contenteditable='true' class='_birthday'>" + item._birthDay.substring(0, 10) + "</td>";
+                        html_code += "<td contenteditable='true' class='_mail'>" + item._mail + "</td>";
+                        html_code += "<td contenteditable='true' class='_phone'>" + item._phone + "</td>";
+                        html_code += "<td contenteditable='true' class='_name'>" + item._name + "</td>";
+                        html_code += "</tr>";
+                        $('#users').append(html_code);
+                    });
+                });
+        });
+
+        function formatItem(item) {
+            return item._id + ' ,  ' +
+                item._name + ' ,  ' +
+                item._phone + ' ,  ' +
+                item._mail + ' ,  ' +
+                item._birthDay + ' ,  ' +
+                item._gender
+                ;
+        }
+
+
+        function find() {
+            var id = $('#userId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#user').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#user').text('Error: ' + err);
+                });
+        }
+
+
+        function registration() {
+            window.location.replace("http://localhost:58129/UserRegistration.html");
+        }
+    </script>
+
+    <!--In case the DB unavailable - we use xml-->
+    <script>
+        function loadXMLDoc() {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    myFunction(this);
+                }
+            };
+            xmlhttp.open("GET", "users.xml", true);
+            xmlhttp.send();
+        }
+
+        function myFunction(xml) {
+            var i;
+            var xmlDoc = xml.responseXML;
+            var table = "<tr><th>Artist</th><th>Title</th></tr>";
+            var x = xmlDoc.getElementsByTagName("CD");
+            for (i = 0; i < x.length; i++) {
+                table += "<tr><td>" +
+                    x[i].getElementsByTagName("ARTIST")[0].childNodes[0].nodeValue +
+                    "</td><td>" +
+                    x[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue +
+                    "</td></tr>";
+            }
+            document.getElementById("demo").innerHTML = table;
+        }
+    </script>
+</body>
+</html>

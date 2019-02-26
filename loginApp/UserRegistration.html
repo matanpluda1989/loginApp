@@ -1,0 +1,76 @@
+﻿
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>הרשמה</title>
+</head>
+<body>
+
+    <div dir ="rtl">
+        <h2>משתמש חדש</h2>
+    </div>
+    <div dir ="rtl">
+        <div>
+            <p>
+                <label for="name"> שם משתמש:</label>
+                <input type="text" id="_nameId" size="20" />
+            </p>
+        </div>
+        <div>
+            <p>  
+                <label for="mail"> מייל:</label>
+                <input type="text" id="_mailId" size="30" />               
+            </p>
+        </div>
+        <div>
+            <p>
+                <label for="birthDay"> תאריך לידה:</label>
+                <input type="date" id="_birthDayId"  value="1990-01-01" size="30" /> 
+            </p>
+        </div>
+        <div>
+            <p>
+                <label for="phone"> טלפון:</label>
+                <input type="text" id="_phoneId" size="10" />
+            </p>
+        </div>
+        <div>
+            <p>
+                <label for="gender"> מין:</label>
+                <select id="_genderId"> 
+                    <option value="male">זכר</option>
+                    <option value="female">נקבה</option>
+                </select>
+            </p>
+        </div>
+        <div>
+            <input type="button" value="שמור" onclick="Save();" />
+        </div>
+
+    </div>
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+
+
+        function Save() {
+            var user =
+            {
+                _name: $('#_nameId').val(),
+                _phone: $('#_phoneId').val(),
+                _mail: $('#_mailId').val(),
+                _birthDay: $('#_birthDayId').val(),
+                _gender: $('#_genderId').val()
+            };
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify(user),
+                url: "api/UserDetailes",
+                contentType: "application/json"
+            }).done(function (res) {             
+                window.location.replace("http://localhost:58129/Users.html");
+            });
+        }
+    </script>
+</body>
+</html>
